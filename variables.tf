@@ -1,7 +1,13 @@
-variable "node_count" {
+variable "min_node_count" {
   type        = number
-  description = "The number of nodes per instance group."
+  description = "Minimum number of nodes in the GKE NodePool."
   default     = 1
+}
+
+variable "max_node_count" {
+  type        = number
+  description = "Maximum number of nodes in the GKE NodePool."
+  default     = 5
 }
 
 variable "node_machine_type" {
