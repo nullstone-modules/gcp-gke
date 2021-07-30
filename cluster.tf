@@ -9,9 +9,14 @@ resource "google_container_cluster" "primary" {
 }
 
 # Service account to manage permission via IAM
-resource "google_service_account" "default" {
+resource "google_service_account" "cluster" {
   account_id   = local.resource_name
-  display_name = "${local.resource_name} Service Account"
+  display_name = "${local.resource_name} service account"
+}
+
+resource "google_project_iam_member" "storage_read_access" {
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.cluster.email}"
 }
 
 # Managed Node Pool
@@ -34,7 +39,7 @@ resource "google_container_node_pool" "primary_nodes" {
   }
   node_config {
     machine_type    = var.node_machine_type
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
