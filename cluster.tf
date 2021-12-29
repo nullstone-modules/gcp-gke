@@ -1,4 +1,3 @@
-# GKE cluster
 resource "google_container_cluster" "primary" {
   name                     = local.resource_name
   location                 = data.google_compute_zones.available.region
@@ -6,17 +5,6 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   network                  = data.ns_connection.network.outputs.vpc_name
   subnetwork               = data.ns_connection.network.outputs.private_subnet_names[0]
-}
-
-# Service account to manage permission via IAM
-resource "google_service_account" "cluster" {
-  account_id   = local.resource_name
-  display_name = "${local.resource_name} service account"
-}
-
-resource "google_project_iam_member" "storage_read_access" {
-  role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.cluster.email}"
 }
 
 # Managed Node Pool
@@ -33,20 +21,16 @@ resource "google_container_node_pool" "primary_nodes" {
 
   # To avoid empty node pool while auto-scaling https://github.com/hashicorp/terraform-provider-google/issues/6901#issuecomment-667369691
   lifecycle {
-    ignore_changes = [
-      initial_node_count
-    ]
+    ignore_changes = [initial_node_count]
   }
+
   node_config {
     machine_type    = var.node_machine_type
     service_account = google_service_account.cluster.email
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
+    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+    labels          = data.ns_workspace.this.tags
+    tags            = ["gke-node", "${local.resource_name}-gke"]
 
-    labels = data.ns_workspace.this.tags
-
-    tags = ["gke-node", "${local.resource_name}-gke"]
     metadata = {
       disable-legacy-endpoints = "true"
     }
