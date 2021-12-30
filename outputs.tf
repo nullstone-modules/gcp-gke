@@ -13,3 +13,13 @@ output "cluster_ca_certificate" {
   description = "string ||| Base64 encoded public certificate used by clients to authenticate to the cluster endpoint."
   sensitive   = true
 }
+
+output "deployer" {
+  value = {
+    email       = try(google_service_account.deployer.email, "")
+    private_key = try(google_service_account_key.deployer.private_key, "")
+  }
+
+  description = "object({ email: string, private_key: string }) ||| A GCP service account with explicit privilege to deploy this GKE services to this cluster."
+  sensitive = true
+}
