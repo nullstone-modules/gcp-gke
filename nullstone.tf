@@ -22,5 +22,6 @@ resource "random_string" "resource_suffix" {
 }
 
 locals {
+  block_name    = data.ns_workspace.this.block_name
   resource_name = "${data.ns_workspace.this.block_ref}-${random_string.resource_suffix.result}"
 }
