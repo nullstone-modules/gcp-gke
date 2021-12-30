@@ -21,5 +21,5 @@ output "deployer" {
   }
 
   description = "object({ email: string, private_key: string }) ||| A GCP service account with explicit privilege to deploy this GKE services to this cluster."
-  sensitive = true
+  sensitive   = true
 }
