@@ -8,7 +8,7 @@ resource "google_service_account_key" "deployer" {
 }
 
 resource "google_service_account_iam_member" "deployer_developer_access" {
-  service_account_id = google_service_account.deployer.account_id
+  service_account_id = google_service_account.deployer.id
   member             = "serviceAccount:${google_service_account.deployer.email}"
   role               = "roles/container.developer"
 }
