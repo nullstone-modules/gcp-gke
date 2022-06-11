@@ -3,8 +3,8 @@ resource "google_container_cluster" "primary" {
   location                 = data.google_compute_zones.available.region
   initial_node_count       = 1
   remove_default_node_pool = true
-  network                  = data.ns_connection.network.outputs.vpc_name
-  subnetwork               = data.ns_connection.network.outputs.private_subnet_names[0]
+  network                  = local.vpc_name
+  subnetwork               = local.private_subnet_names[0]
 }
 
 # Managed Node Pool

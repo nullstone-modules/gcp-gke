@@ -1,0 +1,13 @@
+org_name: nullstone
+name: gcp-gke
+friendly_name: Kubernetes GKE Cluster
+description: Creates a standard, best-practice Kubernetes cluster in GCP using GKE.
+category: cluster
+subcategory: ""
+provider_types:
+    - gcp
+platform: gke
+subplatform: ""
+type: ""
+appCategories: []
+is_public: true
