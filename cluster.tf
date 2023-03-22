@@ -28,7 +28,7 @@ resource "google_container_node_pool" "primary_nodes" {
     machine_type    = var.node_machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    labels          = data.ns_workspace.this.tags
+    labels          = local.tags
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
     metadata = {

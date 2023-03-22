@@ -20,5 +20,8 @@ resource "random_string" "resource_suffix" {
 locals {
   tags          = data.ns_workspace.this.tags
   block_name    = data.ns_workspace.this.block_name
-  resource_name = "${data.ns_workspace.this.block_ref}-${random_string.resource_suffix.result}"
+  block_ref     = data.ns_workspace.this.block_ref
+  resource_name = "${local.block_ref}-${random_string.resource_suffix.result}"
+  truncated_len = min(length(local.block_ref), 28 - length("deployer--12345"))
+  deployer_name = "deployer-${substr(local.block_ref, 0, local.truncated_len)}-${random_string.resource_suffix.result}"
 }

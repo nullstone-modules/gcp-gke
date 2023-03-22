@@ -1,5 +1,5 @@
 resource "google_service_account" "deployer" {
-  account_id   = "deployer-${local.resource_name}"
+  account_id   = local.deployer_name
   display_name = "Deployer for ${local.block_name}"
 }
 
