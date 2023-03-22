@@ -6,8 +6,8 @@ category: cluster
 subcategory: ""
 provider_types:
     - gcp
-platform: gke
-subplatform: ""
+platform: k8s
+subplatform: gke
 type: ""
 appCategories: []
 is_public: true
