@@ -1,3 +1,6 @@
+# 0.2.2 (Mar 24, 2023)
+* Added `roles/container.nodeServiceAccount` to cluster service account to ensure minimum set of permissions.
+
 # 0.2.1 (Mar 22, 2023)
 * Truncate deployer account_id so it does not exceed 28 character limit.
 
