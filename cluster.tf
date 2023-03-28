@@ -5,6 +5,10 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   network                  = local.vpc_name
   subnetwork               = local.private_subnet_names[0]
+
+  workload_identity_config {
+    workload_pool = "${local.project_id}.svc.id.goog"
+  }
 }
 
 # Managed Node Pool

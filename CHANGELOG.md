@@ -1,3 +1,6 @@
+# 0.2.3 (Mar 28, 2023)
+* Enable Workload Identity on GKE cluster.
+
 # 0.2.2 (Mar 24, 2023)
 * Added `roles/container.nodeServiceAccount` to cluster service account to ensure minimum set of permissions.
 
