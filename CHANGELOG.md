@@ -1,3 +1,6 @@
+# 0.3.0 (Mar 29, 2023)
+* Move `deployer` service account into app module.
+
 # 0.2.3 (Mar 28, 2023)
 * Enable Workload Identity on GKE cluster.
 
