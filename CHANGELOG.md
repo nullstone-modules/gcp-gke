@@ -1,5 +1,6 @@
 # 0.3.0 (Mar 29, 2023)
 * Move `deployer` service account into app module.
+* Increase default machine type to `n2-standard-2` for node pool.
 
 # 0.2.3 (Mar 28, 2023)
 * Enable Workload Identity on GKE cluster.

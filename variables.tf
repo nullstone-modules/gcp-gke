@@ -12,6 +12,6 @@ variable "max_node_count" {
 
 variable "node_machine_type" {
   type        = string
-  description = "Node instance machine type."
-  default     = "n1-standard-1"
+  description = "Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types."
+  default     = "n2-standard-2"
 }
