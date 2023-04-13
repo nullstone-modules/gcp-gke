@@ -1,6 +1,5 @@
 data "ns_connection" "network" {
   name     = "network"
-  type     = "network/gcp"
   contract = "network/gcp/vpc"
 }
 
