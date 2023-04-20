@@ -1,3 +1,6 @@
+# 0.3.3 (Apr 20, 2023)
+* Add missing `ip_allocation_policy` for VPC-Native Traffic routing.
+
 # 0.3.2 (Apr 20, 2023)
 * Enabled VPC-Native Traffic Routing.
 

@@ -7,6 +7,8 @@ resource "google_container_cluster" "primary" {
   network                  = local.vpc_name
   subnetwork               = local.private_subnet_names[0]
 
+  ip_allocation_policy {}
+
   workload_identity_config {
     workload_pool = "${local.project_id}.svc.id.goog"
   }
