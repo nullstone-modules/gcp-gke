@@ -3,6 +3,7 @@ resource "google_container_cluster" "primary" {
   location                 = data.google_compute_zones.available.region
   initial_node_count       = 1
   remove_default_node_pool = true
+  networking_mode          = "VPC_NATIVE"
   network                  = local.vpc_name
   subnetwork               = local.private_subnet_names[0]
 
