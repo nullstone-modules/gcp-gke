@@ -1,5 +1,8 @@
-# 0.3.1 (Apr 20, 2023)
+# 0.3.2 (Apr 20, 2023)
 * Enabled VPC-Native Traffic Routing.
+
+# 0.3.1 (Mar 30, 2023)
+* Drop `cluster_name` from outputs.
 
 # 0.3.0 (Mar 29, 2023)
 * Moved `deployer` service account into app module.
