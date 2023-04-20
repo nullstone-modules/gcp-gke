@@ -1,3 +1,6 @@
+# 0.3.5 (Apr 20, 2023)
+* Fixed missing `num_node_zones` functionality.
+
 # 0.3.4 (Apr 20, 2023)
 * Added `num_node_zones` to provide limits around how many nodes in the cluster.
 
