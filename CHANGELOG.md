@@ -1,3 +1,6 @@
+# 0.3.4 (Apr 20, 2023)
+* Added `num_node_zones` to provide limits around how many nodes in the cluster.
+
 # 0.3.3 (Apr 20, 2023)
 * Add missing `ip_allocation_policy` for VPC-Native Traffic routing.
 

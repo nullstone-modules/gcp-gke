@@ -1,3 +1,10 @@
+locals {
+  // Select the zones to place the node pool
+  // We choose from the list available zones in this region
+  // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
+  zones = slice(local.available_zones, 0, min(var.num_node_zones, length(local.available_zones)))
+}
+
 resource "google_container_cluster" "primary" {
   name                     = local.resource_name
   location                 = data.google_compute_zones.available.region
