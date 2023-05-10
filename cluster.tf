@@ -19,6 +19,8 @@ resource "google_container_cluster" "primary" {
   workload_identity_config {
     workload_pool = "${local.project_id}.svc.id.goog"
   }
+
+  depends_on = [google_project_service.container]
 }
 
 # Managed Node Pool
