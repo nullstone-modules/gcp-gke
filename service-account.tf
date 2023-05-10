@@ -2,6 +2,8 @@
 resource "google_service_account" "cluster" {
   account_id   = local.resource_name
   display_name = "${local.resource_name} service account"
+
+  depends_on = [google_project_service.iam]
 }
 
 resource "google_project_iam_member" "cluster_base" {
