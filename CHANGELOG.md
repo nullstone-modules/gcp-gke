@@ -1,3 +1,13 @@
+# 0.3.8 (Mar 22, 2024)
+* Enable several storage csi driver addons by default. (filestore, persistent disk, fuse)
+* Enable config connector addon by default.
+
+# 0.3.7 (May 10, 2023)
+* Enable container Google API.
+
+# 0.3.6 (May 10, 2023)
+* Enable iam Google API.
+
 # 0.3.5 (Apr 20, 2023)
 * Fixed missing `num_node_zones` functionality.
 
