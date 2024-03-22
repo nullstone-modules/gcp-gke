@@ -1,3 +1,6 @@
+# 0.3.9 (Mar 22, 2024)
+* Upgrade TF providers.
+
 # 0.3.8 (Mar 22, 2024)
 * Enable several storage csi driver addons by default. (filestore, persistent disk, fuse)
 * Enable config connector addon by default.
