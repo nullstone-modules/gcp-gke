@@ -1,3 +1,6 @@
+# 0.3.10 (Nov 27, 2024)
+* Upgrade TF providers.
+
 # 0.3.9 (Mar 22, 2024)
 * Upgrade TF providers.
 
