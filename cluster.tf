@@ -14,6 +14,8 @@ resource "google_container_cluster" "primary" {
   network                  = local.vpc_name
   subnetwork               = local.private_subnet_names[0]
 
+  deletion_protection = false
+
   ip_allocation_policy {}
 
   workload_identity_config {

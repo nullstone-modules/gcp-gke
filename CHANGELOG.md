@@ -1,3 +1,6 @@
+# 0.3.11 (Dec 02, 2024)
+* Remove deletion protection since Nullstone has approvals for destruction.
+
 # 0.3.10 (Nov 27, 2024)
 * Upgrade TF providers.
 
