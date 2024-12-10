@@ -1,3 +1,6 @@
+# 0.3.12 (Dec 09, 2024)
+* Added permissions so that we can read images from the artifact registry.
+
 # 0.3.11 (Dec 02, 2024)
 * Remove deletion protection since Nullstone has approvals for destruction.
 
