@@ -12,8 +12,8 @@ resource "google_project_iam_member" "cluster_base" {
   project = local.project_id
 }
 
-resource "google_project_iam_member" "cluster_image_pull" {
-  role    = "roles/storage.objectViewer"
+resource "google_project_iam_member" "cluster_registry_image_pull" {
+  role    = "roles/artifactregistry.reader"
   member  = "serviceAccount:${google_service_account.cluster.email}"
   project = local.project_id
 }
