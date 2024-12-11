@@ -1,3 +1,6 @@
+# 0.3.13 (Dec 11, 2024)
+* Cluster CA certificate is no longer marked as a sensitive output because it's used to verify server identity.
+
 # 0.3.12 (Dec 09, 2024)
 * Added permissions so that we can read images from the artifact registry.
 
