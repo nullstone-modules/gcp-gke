@@ -1,3 +1,7 @@
+# 0.3.14 (Dec 12, 2024)
+* Enable Gateway API on k8s cluster.
+* Enable Service Account on k8s cluster.
+
 # 0.3.13 (Dec 11, 2024)
 * Cluster CA certificate is no longer marked as a sensitive output because it's used to verify server identity.
 

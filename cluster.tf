@@ -37,6 +37,14 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  gateway_api_config {
+    channel = "CHANNEL_STANDARD"
+  }
+
+  service_account_config {
+    enabled = true
+  }
+
   depends_on = [google_project_service.container]
 }
 
