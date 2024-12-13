@@ -1,3 +1,6 @@
+# 0.3.15 (Dec 13, 2024)
+* Revert unknown Service Account Config on k8s cluster.
+
 # 0.3.14 (Dec 12, 2024)
 * Enable Gateway API on k8s cluster.
 * Enable Service Account on k8s cluster.
