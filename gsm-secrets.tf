@@ -1,5 +1,11 @@
 // TODO: Migrate to using built-in SecretsManager support from Google
 
+resource "kubernetes_namespace_v1" "external-secrets" {
+  metadata {
+    name = "external-secrets"
+  }
+}
+
 locals {
   cluster_id             = google_container_cluster.primary.id
   cluster_name           = google_container_cluster.primary.name
@@ -8,6 +14,12 @@ locals {
 }
 
 data "google_client_config" "provider" {}
+
+provider "kubernetes" {
+  host                   = "https://${local.cluster_endpoint}"
+  token                  = data.google_client_config.provider.access_token
+  cluster_ca_certificate = base64decode(local.cluster_ca_certificate)
+}
 
 provider "helm" {
   kubernetes {
@@ -28,5 +40,5 @@ resource "helm_release" "gsm-external-secrets" {
   name       = "external-secrets"
   repository = "https://charts.external-secrets.io"
   chart      = "external-secrets"
-  namespace  = "external-secrets"
+  namespace  = kubernetes_namespace_v1.external-secrets.metadata[0].name
 }
