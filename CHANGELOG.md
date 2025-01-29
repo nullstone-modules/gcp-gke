@@ -1,3 +1,6 @@
+# 0.3.16 (Jan 29, 2025)
+* Moved `external-secrets` helm chart into this TF module. 
+
 # 0.3.15 (Dec 13, 2024)
 * Revert unknown Service Account Config on k8s cluster.
 
