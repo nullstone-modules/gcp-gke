@@ -1,3 +1,10 @@
+# 0.3.18 (Jan 30, 2025)
+* Fixed destruction of `external-secrets` namespace from stalling.
+* Added full set of labels to `external-secrets` namespace.
+
+# 0.3.17 (Jan 30, 2025)
+* Increase wait timeout for destruction of `external-secrets` namespace.
+
 # 0.3.16 (Jan 29, 2025)
 * Moved `external-secrets` helm chart into this TF module. 
 
