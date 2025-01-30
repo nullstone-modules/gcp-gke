@@ -4,6 +4,10 @@ resource "kubernetes_namespace_v1" "external-secrets" {
   metadata {
     name = "external-secrets"
   }
+
+  timeouts {
+    delete = "10m"
+  }
 }
 
 locals {
