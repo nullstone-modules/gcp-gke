@@ -1,3 +1,6 @@
+# 0.3.19 (Feb 09, 2025)
+* Added `default_namespace` output.
+
 # 0.3.18 (Jan 30, 2025)
 * Fixed destruction of `external-secrets` namespace from stalling.
 * Added full set of labels to `external-secrets` namespace.
