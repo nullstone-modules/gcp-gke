@@ -1,3 +1,6 @@
+# 0.4.1 (Dec 11, 2025)
+* Fixed change to `helm` provider definition from provider upgrade.
+
 # 0.4.0 (Dec 11, 2025)
 * Migrated from `terraform` to `tofu`.
 
