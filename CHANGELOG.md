@@ -1,3 +1,6 @@
+# 0.4.0 (Dec 11, 2025)
+* Migrated from `terraform` to `tofu`.
+
 # 0.3.19 (Feb 09, 2025)
 * Added `default_namespace` output.
 
