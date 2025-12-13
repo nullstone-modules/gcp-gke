@@ -1,3 +1,6 @@
+# 0.4.2 (Dec 12, 2025)
+* Reverted to `terraform`.
+
 # 0.4.1 (Dec 11, 2025)
 * Fixed change to `helm` provider definition from provider upgrade.
 
