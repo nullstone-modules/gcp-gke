@@ -25,3 +25,9 @@ variable "node_machine_type" {
   description = "Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types."
   default     = "n2-standard-2"
 }
+
+variable "node_disk_size" {
+  type        = number
+  default     = 50
+  description = "The disk size of each node node in GB. This disk is used for OS files, logs, and images"
+}

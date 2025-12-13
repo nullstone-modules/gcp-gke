@@ -1,3 +1,6 @@
+# 0.4.4 (Dec 12, 2025)
+* Added `var.node_disk_size` to allow configuration of each node's disk.
+
 # 0.4.3 (Dec 12, 2025)
 * Reduced node disk size to 50GB. (Previous default was 100GB)
 
