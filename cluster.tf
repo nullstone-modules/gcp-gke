@@ -37,6 +37,11 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  node_config {
+    disk_type    = "pd-standard"
+    disk_size_gb = var.node_disk_size
+  }
+
   gateway_api_config {
     channel = "CHANNEL_STANDARD"
   }

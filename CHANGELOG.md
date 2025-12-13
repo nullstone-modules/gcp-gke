@@ -1,3 +1,6 @@
+# 0.4.5 (Dec 12, 2025)
+* Applied `node_disk_size` to container cluster node config.
+
 # 0.4.4 (Dec 12, 2025)
 * Added `var.node_disk_size` to allow configuration of each node's disk.
 
