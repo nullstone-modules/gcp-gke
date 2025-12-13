@@ -70,6 +70,9 @@ resource "google_container_node_pool" "primary_nodes" {
     labels          = local.tags
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
+    disk_size_gb = 50
+    disk_type    = "pd-standard"
+
     metadata = {
       disable-legacy-endpoints = "true"
     }
