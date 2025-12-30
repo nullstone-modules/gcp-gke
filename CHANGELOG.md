@@ -1,3 +1,6 @@
+# 0.4.7 (Dec 30, 2025)
+* Added logging and metrics access to node service account.
+
 # 0.4.6 (Dec 30, 2025)
 * Do not make changes to the default node pool since we remove it.
 

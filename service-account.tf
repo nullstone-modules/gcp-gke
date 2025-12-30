@@ -7,13 +7,25 @@ resource "google_service_account" "cluster" {
 }
 
 resource "google_project_iam_member" "cluster_base" {
+  project = local.project_id
   role    = "roles/container.nodeServiceAccount"
   member  = "serviceAccount:${google_service_account.cluster.email}"
+}
+
+resource "google_project_iam_member" "cluster_logging" {
   project = local.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.cluster.email}"
+}
+
+resource "google_project_iam_member" "cluster_metrics" {
+  project = local.project_id
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${google_service_account.cluster.email}"
 }
 
 resource "google_project_iam_member" "cluster_registry_image_pull" {
+  project = local.project_id
   role    = "roles/artifactregistry.reader"
   member  = "serviceAccount:${google_service_account.cluster.email}"
-  project = local.project_id
 }
