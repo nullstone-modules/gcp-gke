@@ -50,7 +50,7 @@ resource "google_container_cluster" "primary" {
 
 # Managed Node Pool
 resource "google_container_node_pool" "primary_nodes" {
-  name               = "${google_container_cluster.primary.name}-node-pool"
+  name_prefix        = "${local.resource_name}-"
   location           = data.google_compute_zones.available.region
   cluster            = google_container_cluster.primary.name
   initial_node_count = 1
@@ -64,6 +64,8 @@ resource "google_container_node_pool" "primary_nodes" {
 
   # To avoid empty node pool while auto-scaling https://github.com/hashicorp/terraform-provider-google/issues/6901#issuecomment-667369691
   lifecycle {
+    create_before_destroy = true
+
     ignore_changes = [initial_node_count]
   }
 
@@ -80,5 +82,9 @@ resource "google_container_node_pool" "primary_nodes" {
     metadata = {
       disable-legacy-endpoints = "true"
     }
+  }
+
+  network_config {
+    enable_private_nodes = true
   }
 }

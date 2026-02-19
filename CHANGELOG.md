@@ -1,3 +1,6 @@
+# 0.4.9 (Feb 19, 2026)
+* Reconfigured cluster node pool to enable private nodes.
+
 # 0.4.8 (Feb 19, 2026)
 * Removed public IP address for cluster nodes.
 
