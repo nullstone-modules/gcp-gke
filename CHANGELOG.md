@@ -1,3 +1,6 @@
+# 0.4.8 (Feb 19, 2026)
+* Removed public IP address for cluster nodes.
+
 # 0.4.7 (Dec 30, 2025)
 * Added logging and metrics access to node service account.
 

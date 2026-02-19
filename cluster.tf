@@ -22,6 +22,10 @@ resource "google_container_cluster" "primary" {
     workload_pool = "${local.project_id}.svc.id.goog"
   }
 
+  private_cluster_config {
+    enable_private_nodes = true
+  }
+
   addons_config {
     gcs_fuse_csi_driver_config {
       enabled = true
