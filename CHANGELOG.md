@@ -1,3 +1,6 @@
+# 0.4.10 (Feb 19, 2026)
+* Shortened node pool name
+
 # 0.4.9 (Feb 19, 2026)
 * Reconfigured cluster node pool to enable private nodes.
 

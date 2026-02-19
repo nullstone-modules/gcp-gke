@@ -50,7 +50,7 @@ resource "google_container_cluster" "primary" {
 
 # Managed Node Pool
 resource "google_container_node_pool" "primary_nodes" {
-  name_prefix        = "${local.resource_name}-"
+  name_prefix        = "${random_string.resource_suffix.result}-"
   location           = data.google_compute_zones.available.region
   cluster            = google_container_cluster.primary.name
   initial_node_count = 1
