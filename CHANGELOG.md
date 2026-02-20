@@ -1,3 +1,6 @@
+# 0.4.12 (Feb 20, 2026)
+* Fixed resource alert filter for GKE nodes.
+
 # 0.4.11 (Feb 20, 2026)
 * Added resource alerts for GKE nodes.
 
