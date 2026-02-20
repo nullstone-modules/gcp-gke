@@ -1,5 +1,8 @@
+# 0.4.13 (Feb 20, 2026)
+* Fixed the resource alert filter to use the node pool name.
+
 # 0.4.12 (Feb 20, 2026)
-* Fixed resource alert filter for GKE nodes.
+* Fixed the resource alert filter for GKE nodes.
 
 # 0.4.11 (Feb 20, 2026)
 * Added resource alerts for GKE nodes.
