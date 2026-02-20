@@ -1,3 +1,6 @@
+# 0.4.14 (Feb 20, 2026)
+* Fixed the resource alert filter to use `metadata.user_labels."goog-k8s-node-pool-name"`.
+
 # 0.4.13 (Feb 20, 2026)
 * Fixed the resource alert filter to use the node pool name.
 
