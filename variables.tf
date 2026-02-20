@@ -31,3 +31,16 @@ variable "node_disk_size" {
   default     = 50
   description = "The disk size of each node node in GB. This disk is used for OS files, logs, and images"
 }
+
+variable "resource_thresholds" {
+  type = object({
+    cpu = number
+  })
+  default = {
+    cpu = 90
+  }
+  description = <<EOF
+Configure CPU utilization alerting for the VM.
+When enabled, a GCP monitoring alert policy is created that notifies the given notification channel when CPU utilization exceeds the configured threshold (0-100).
+EOF
+}

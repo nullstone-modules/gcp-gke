@@ -1,3 +1,6 @@
+# 0.4.11 (Feb 20, 2026)
+* Added resource alerts for GKE nodes.
+
 # 0.4.10 (Feb 19, 2026)
 * Shortened node pool name
 
