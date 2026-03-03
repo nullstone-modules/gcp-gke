@@ -44,3 +44,13 @@ Configure CPU utilization alerting for the VM.
 When enabled, a GCP monitoring alert policy is created that notifies the given notification channel when CPU utilization exceeds the configured threshold (0-100).
 EOF
 }
+
+variable "enable_dataplane_v2" {
+  type        = bool
+  default     = false
+  description = <<EOF
+Enabling this improves network performance and adds better network policy enforcement.
+
+WARNING: Changing this will result in a recreation of the cluster without downtime and data migration.
+EOF
+}

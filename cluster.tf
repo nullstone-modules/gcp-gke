@@ -16,6 +16,8 @@ resource "google_container_cluster" "primary" {
 
   deletion_protection = false
 
+  datapath_provider = var.enable_dataplane_v2 ? "ADVANCED_DATAPATH" : "LEGACY_DATAPATH"
+
   ip_allocation_policy {}
 
   workload_identity_config {
@@ -24,6 +26,10 @@ resource "google_container_cluster" "primary" {
 
   private_cluster_config {
     enable_private_nodes = true
+  }
+
+  network_policy {
+    enabled = true
   }
 
   addons_config {
