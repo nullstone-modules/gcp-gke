@@ -1,3 +1,7 @@
+# 0.4.18 (Mar 03, 2026)
+* Fixed `datapath_provider` from causing recreation when not dataplane v2 is not enabled.
+* Fixed network policy provider by specifying `CALICO`.
+
 # 0.4.15 (Mar 03, 2026)
 * Enabled network policy on the cluster.
 * Added `var.enable_dataplane_v2` to enable Dataplane V2.
