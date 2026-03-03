@@ -46,6 +46,9 @@ resource "google_container_cluster" "primary" {
     config_connector_config {
       enabled = true
     }
+    network_policy_config {
+      disabled = false
+    }
   }
 
   gateway_api_config {
