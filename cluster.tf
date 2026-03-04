@@ -28,9 +28,15 @@ resource "google_container_cluster" "primary" {
     enable_private_nodes = true
   }
 
-  network_policy {
-    enabled  = true
-    provider = "CALICO"
+  dynamic "network_policy" {
+    // network_policy stanza cannot be specified when using Dataplane v2
+    // It's implied to be enabled and Google will error
+    for_each = var.enable_dataplane_v2 ? [] : [1]
+
+    content {
+      enabled  = true
+      provider = "CALICO"
+    }
   }
 
   addons_config {

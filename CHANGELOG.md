@@ -1,3 +1,6 @@
+# 0.4.20 (Mar 04, 2026)
+* Removed `network_policy` when Dataplane v2 is enabled to prevent google error.
+
 # 0.4.19 (Mar 03, 2026)
 * Enabled network policy config addon.
 
