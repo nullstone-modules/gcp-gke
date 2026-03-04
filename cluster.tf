@@ -53,7 +53,7 @@ resource "google_container_cluster" "primary" {
       enabled = true
     }
     network_policy_config {
-      disabled = false
+      disabled = var.enable_dataplane_v2 ? true : false
     }
   }
 
