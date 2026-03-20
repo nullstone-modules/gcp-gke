@@ -19,3 +19,11 @@ resource "google_project_service" "container" {
   disable_dependent_services = false
   disable_on_destroy         = false
 }
+
+resource "google_project_service" "telemetry" {
+  service                    = "telemetry.googleapis.com"
+  disable_dependent_services = false
+  disable_on_destroy         = false
+
+  count = var.enable_managed_otel ? 1 : 0
+}

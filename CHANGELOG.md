@@ -1,3 +1,6 @@
+# 0.4.22 (Mar 20, 2026)
+* Added `var.enable_managed_otel` to enable Google-managed OpenTelemetry collector. (needs manual enable as well)
+
 # 0.4.21 (Mar 04, 2026)
 * Disabled network policy config addon when using Dataplane v2.
 

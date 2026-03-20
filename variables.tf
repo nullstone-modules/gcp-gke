@@ -54,3 +54,17 @@ Enabling this improves network performance and adds better network policy enforc
 WARNING: Changing this will result in a recreation of the cluster without downtime and data migration.
 EOF
 }
+
+variable "enable_managed_otel" {
+  type    = bool
+  default = false
+
+  description = <<EOF
+Enable to install the Google-managed OpenTelemetry collector on this cluster.
+The collector endpoint is emitted as an output `otel_collector_protocol`+`otel_collector_endpoint`.
+
+Warning: The managed collector cannot be enabled through Terraform yet.
+You must enable this flag to configure OpenTelemetry in your application though.
+After enabling, perform: `gcloud container clusters update <cluster-name> --enable-managed-otel`
+EOF
+}

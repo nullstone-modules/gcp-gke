@@ -57,6 +57,11 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  # NOTE: This doesn't exist in the Terraform provider yet
+  # observability_config {
+  #   managed_otel = true
+  # }
+
   gateway_api_config {
     channel = "CHANNEL_STANDARD"
   }
