@@ -68,3 +68,9 @@ You must enable this flag to configure OpenTelemetry in your application though.
 After enabling, perform: `gcloud container clusters update <cluster-name> --enable-managed-otel`
 EOF
 }
+
+locals {
+  managed_otel_svc      = "opentelemetry-collector"
+  managed_otel_ns       = "gke-managed-otel"
+  managed_otel_endpoint = "http://${local.managed_otel_svc}.${local.managed_otel_ns}.svc.cluster.local:4317"
+}

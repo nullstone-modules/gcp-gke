@@ -1,3 +1,6 @@
+# 0.4.23 (Mar 20, 2026)
+* Fixed managed OpenTelemetry endpoint.
+
 # 0.4.22 (Mar 20, 2026)
 * Added `var.enable_managed_otel` to enable Google-managed OpenTelemetry collector. (needs manual enable as well)
 

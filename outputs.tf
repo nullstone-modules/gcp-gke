@@ -29,6 +29,6 @@ output "otel_collector_protocol" {
 }
 
 output "otel_collector_endpoint" {
-  value       = var.enable_managed_otel ? "http://otel-collector.monitoring.svc.cluster.local:4317" : ""
+  value       = var.enable_managed_otel ? local.managed_otel_endpoint : ""
   description = "string ||| If Google-managed OpenTelemetry collector is enabled, this contains the endpoint for the collector"
 }
