@@ -24,4 +24,10 @@ locals {
   env_name      = data.ns_workspace.this.env_name
   block_ref     = data.ns_workspace.this.block_ref
   resource_name = "${local.block_ref}-${random_string.resource_suffix.result}"
+
+  resource_labels = {
+    nullstone-stack = local.stack_name
+    nullstone-block = local.block_name
+    nullstone-env   = local.env_name
+  }
 }

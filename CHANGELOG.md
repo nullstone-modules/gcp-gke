@@ -1,3 +1,6 @@
+# 0.4.24 (Apr 22, 2026)
+* Added nullstone resource labels to GKE cluster and nodes.
+
 # 0.4.23 (Mar 20, 2026)
 * Fixed managed OpenTelemetry endpoint.
 

@@ -7,6 +7,7 @@ locals {
 
 resource "google_container_cluster" "primary" {
   name                     = local.resource_name
+  resource_labels          = local.resource_labels
   location                 = data.google_compute_zones.available.region
   initial_node_count       = 1
   remove_default_node_pool = true
@@ -95,6 +96,7 @@ resource "google_container_node_pool" "primary_nodes" {
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
     labels          = local.tags
+    resource_labels = local.resource_labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
     disk_size_gb = var.node_disk_size
