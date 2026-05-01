@@ -1,3 +1,6 @@
+# 0.4.26 (May 01, 2026)
+* Added `project_id` to outputs.
+
 # 0.4.25 (May 01, 2026) 
 * Added `region` to outputs.
 
