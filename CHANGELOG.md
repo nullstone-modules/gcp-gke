@@ -1,3 +1,6 @@
+# 0.4.25 (May 01, 2026) 
+* Added `region` to outputs.
+
 # 0.4.24 (Apr 22, 2026)
 * Added nullstone resource labels to GKE cluster and nodes.
 
