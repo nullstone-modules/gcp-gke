@@ -1,3 +1,9 @@
+# 0.5.0 (May 12, 2026)
+* Split the node pool into two node pools (`blue`, `green`) that can be used to make changes to node pools without downtime.
+* **Breaking:** Removed `var.node_machine_type` and `var.node_disk_size`. Use `var.blue_node_pool = { machine_type = ..., disk_size = ... }` and `var.green_node_pool = { ... }` instead.
+* The existing node pool is migrated into `blue[0]` via a `moved` block. Pass the workspace's current `node_machine_type` and `node_disk_size` values into `blue_node_pool` to keep the apply diff at zero (state move only, no node pool rebuild).
+* See README for the blue/green swap procedure used to roll node pool config changes without downtime.
+
 # 0.4.26 (May 01, 2026)
 * Added `project_id` to outputs.
 

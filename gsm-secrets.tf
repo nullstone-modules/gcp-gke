@@ -42,8 +42,6 @@ resource "kubernetes_namespace_v1" "external-secrets" {
     name   = local.es_namespace
     labels = local.es_ns_labels
   }
-
-  depends_on = [google_container_node_pool.primary_nodes]
 }
 
 // We are going to configure the kubernetes cluster with a secrets store
@@ -59,5 +57,9 @@ resource "helm_release" "gsm-external-secrets" {
   chart      = "external-secrets"
   namespace  = local.es_namespace
 
-  depends_on = [kubernetes_namespace_v1.external-secrets]
+  depends_on = [
+    kubernetes_namespace_v1.external-secrets,
+    google_container_node_pool.blue,
+    google_container_node_pool.green,
+  ]
 }

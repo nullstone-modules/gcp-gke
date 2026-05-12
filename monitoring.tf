@@ -18,7 +18,8 @@ resource "google_monitoring_alert_policy" "cpu" {
     display_name = "CPU utilization above ${var.resource_thresholds.cpu}%"
 
     condition_threshold {
-      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" = \"${google_container_node_pool.primary_nodes.name}\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
+      # Match nodes from both blue and green pools by prefix on the random suffix shared by both pool names.
+      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" =~ \"^${random_string.resource_suffix.result}-.*\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
       duration        = "60s"
       comparison      = "COMPARISON_GT"
       threshold_value = var.resource_thresholds.cpu / 100.0

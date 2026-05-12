@@ -3,6 +3,12 @@ locals {
   // We choose from the list available zones in this region
   // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
   zones = slice(local.available_zones, 0, min(var.num_node_zones, length(local.available_zones)))
+
+  // Node pool name_prefix is derived from the block ref (e.g., "my-app-blue-"), or overridden
+  // by the caller via var.{blue,green}_node_pool.name_prefix. The override is the migration
+  // escape hatch — existing workspaces set it to the legacy pool's prefix to keep the pool intact.
+  blue_name_prefix  = var.blue_node_pool.name_prefix != null ? var.blue_node_pool.name_prefix : "${local.block_ref}-blue-"
+  green_name_prefix = var.green_node_pool.name_prefix != null ? var.green_node_pool.name_prefix : "${local.block_ref}-green-"
 }
 
 resource "google_container_cluster" "primary" {
@@ -18,6 +24,13 @@ resource "google_container_cluster" "primary" {
   deletion_protection = false
 
   datapath_provider = var.enable_dataplane_v2 ? "ADVANCED_DATAPATH" : null
+
+  lifecycle {
+    precondition {
+      condition     = var.blue_node_pool.enabled || var.green_node_pool.enabled
+      error_message = "At least one of blue_node_pool.enabled or green_node_pool.enabled must be true."
+    }
+  }
 
   ip_allocation_policy {}
 
@@ -70,9 +83,19 @@ resource "google_container_cluster" "primary" {
   depends_on = [google_project_service.container]
 }
 
-# Managed Node Pool
-resource "google_container_node_pool" "primary_nodes" {
-  name_prefix        = "${random_string.resource_suffix.result}-"
+# Managed Node Pools
+#
+# The cluster runs two parallel node pools, `blue` and `green`, each independently toggleable
+# via `var.blue_node_pool.enabled` and `var.green_node_pool.enabled`. This enables no-downtime
+# rollouts of machine type / disk size changes via the blue/green swap pattern documented in the
+# README. The `moved` block at the bottom of this file migrates the legacy `primary_nodes` state
+# into `blue[0]`; existing workspaces should set `var.blue_node_pool.name_prefix` to the legacy
+# pool's prefix to keep that pool intact (otherwise it gets replaced via create_before_destroy).
+
+resource "google_container_node_pool" "blue" {
+  count = var.blue_node_pool.enabled ? 1 : 0
+
+  name_prefix        = local.blue_name_prefix
   location           = data.google_compute_zones.available.region
   cluster            = google_container_cluster.primary.name
   initial_node_count = 1
@@ -89,17 +112,22 @@ resource "google_container_node_pool" "primary_nodes" {
     create_before_destroy = true
 
     ignore_changes = [initial_node_count]
+
+    precondition {
+      condition     = length(local.blue_name_prefix) <= 14
+      error_message = "blue node pool name_prefix '${local.blue_name_prefix}' is ${length(local.blue_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Set var.blue_node_pool.name_prefix to a shorter value."
+    }
   }
 
   node_config {
-    machine_type    = var.node_machine_type
+    machine_type    = var.blue_node_pool.machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
     labels          = local.tags
     resource_labels = local.resource_labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
-    disk_size_gb = var.node_disk_size
+    disk_size_gb = var.blue_node_pool.disk_size
     disk_type    = "pd-standard"
 
     metadata = {
@@ -110,4 +138,56 @@ resource "google_container_node_pool" "primary_nodes" {
   network_config {
     enable_private_nodes = true
   }
+}
+
+resource "google_container_node_pool" "green" {
+  count = var.green_node_pool.enabled ? 1 : 0
+
+  name_prefix        = local.green_name_prefix
+  location           = data.google_compute_zones.available.region
+  cluster            = google_container_cluster.primary.name
+  initial_node_count = 1
+
+  node_locations = local.zones
+
+  autoscaling {
+    min_node_count = var.min_node_count
+    max_node_count = var.max_node_count
+  }
+
+  lifecycle {
+    create_before_destroy = true
+
+    ignore_changes = [initial_node_count]
+
+    precondition {
+      condition     = length(local.green_name_prefix) <= 14
+      error_message = "green node pool name_prefix '${local.green_name_prefix}' is ${length(local.green_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Set var.green_node_pool.name_prefix to a shorter value."
+    }
+  }
+
+  node_config {
+    machine_type    = var.green_node_pool.machine_type
+    service_account = google_service_account.cluster.email
+    oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
+    labels          = local.tags
+    resource_labels = local.resource_labels
+    tags            = ["gke-node", "${local.resource_name}-gke"]
+
+    disk_size_gb = var.green_node_pool.disk_size
+    disk_type    = "pd-standard"
+
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+  }
+
+  network_config {
+    enable_private_nodes = true
+  }
+}
+
+moved {
+  from = google_container_node_pool.primary_nodes
+  to   = google_container_node_pool.blue[0]
 }

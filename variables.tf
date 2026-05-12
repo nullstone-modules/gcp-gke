@@ -20,16 +20,58 @@ With min_node_count=1, max_node_count=5, num_node_zones=2, the GKE NodePool will
 EOF
 }
 
-variable "node_machine_type" {
-  type        = string
-  description = "Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types."
-  default     = "n2-standard-2"
+variable "blue_node_pool" {
+  type = object({
+    enabled      = optional(bool, true)
+    name_prefix  = optional(string)
+    machine_type = optional(string, "n2-standard-2")
+    disk_size    = optional(number, 50)
+  })
+  default     = {}
+  description = <<EOF
+Configuration for the "blue" node pool.
+- enabled: When true (default), the blue node pool is provisioned.
+- name_prefix: Optional override for the node pool name_prefix. When unset, defaults to "<block_ref>-blue-".
+  Workspaces migrating from a single-pool setup should set this to the existing pool's prefix
+  (e.g., "<random-suffix>-") to avoid recreating the pool on first apply. Find the current value with
+  `terraform state show google_container_node_pool.primary_nodes`. GKE caps node pool names at 40 chars
+  and the provider appends a 26-char unique suffix, so name_prefix must be <= 14 chars.
+- machine_type: Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types.
+- disk_size: The disk size of each node in GB. This disk is used for OS files, logs, and images.
+
+Pair with `green_node_pool` to roll node pool config changes without downtime. See README for the swap procedure.
+EOF
+
+  validation {
+    condition     = var.blue_node_pool.name_prefix == null || length(var.blue_node_pool.name_prefix) <= 14
+    error_message = "blue_node_pool.name_prefix must be 14 characters or fewer (GKE caps node pool names at 40 chars; the provider appends a 26-char unique suffix)."
+  }
 }
 
-variable "node_disk_size" {
-  type        = number
-  default     = 50
-  description = "The disk size of each node node in GB. This disk is used for OS files, logs, and images"
+variable "green_node_pool" {
+  type = object({
+    enabled      = optional(bool, false)
+    name_prefix  = optional(string)
+    machine_type = optional(string, "n2-standard-2")
+    disk_size    = optional(number, 50)
+  })
+  default     = {}
+  description = <<EOF
+Configuration for the "green" node pool.
+- enabled: When true, the green node pool is provisioned alongside blue. Defaults to false.
+- name_prefix: Optional override for the node pool name_prefix. When unset, defaults to "<block_ref>-green-".
+  GKE caps node pool names at 40 chars and the provider appends a 26-char unique suffix, so name_prefix
+  must be <= 14 chars.
+- machine_type: Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types.
+- disk_size: The disk size of each node in GB. This disk is used for OS files, logs, and images.
+
+Pair with `blue_node_pool` to roll node pool config changes without downtime. See README for the swap procedure.
+EOF
+
+  validation {
+    condition     = var.green_node_pool.name_prefix == null || length(var.green_node_pool.name_prefix) <= 14
+    error_message = "green_node_pool.name_prefix must be 14 characters or fewer (GKE caps node pool names at 40 chars; the provider appends a 26-char unique suffix)."
+  }
 }
 
 variable "resource_thresholds" {
