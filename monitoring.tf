@@ -25,8 +25,10 @@ resource "google_monitoring_alert_policy" "cpu" {
     display_name = "CPU utilization above ${var.resource_thresholds.cpu}%"
 
     condition_threshold {
-      # Match nodes from the currently-enabled blue/green pools by exact name (regex alternation).
-      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" =~ \"^(${join("|", local.monitored_node_pool_names)})$\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
+      # Match nodes from the currently-enabled blue/green pools. GCP monitoring filter language
+      # uses `= monitoring.regex.full_match("...")` for regex on label fields (=~ is not supported).
+      # full_match anchors the whole string, so no ^/$ needed.
+      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" = monitoring.regex.full_match(\"${join("|", local.monitored_node_pool_names)}\") AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
       duration        = "60s"
       comparison      = "COMPARISON_GT"
       threshold_value = var.resource_thresholds.cpu / 100.0
