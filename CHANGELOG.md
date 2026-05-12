@@ -1,3 +1,6 @@
+# 0.5.4 (May 12, 2026)
+* Fixed cpu monitoring alert.
+
 # 0.5.3 (May 12, 2026)
 * Fixed variable validation syntax.
 

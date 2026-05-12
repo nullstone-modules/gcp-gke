@@ -6,6 +6,13 @@ data "ns_connection" "notification" {
 
 locals {
   notification_name = try(data.ns_connection.notification.outputs.notification_name, "")
+
+  // Names of every node pool currently provisioned by this module (blue + green, whichever
+  // are enabled). Used to scope the CPU alert filter to nodes from these pools.
+  monitored_node_pool_names = concat(
+    [for np in google_container_node_pool.blue : np.name],
+    [for np in google_container_node_pool.green : np.name],
+  )
 }
 
 resource "google_monitoring_alert_policy" "cpu" {
@@ -18,8 +25,8 @@ resource "google_monitoring_alert_policy" "cpu" {
     display_name = "CPU utilization above ${var.resource_thresholds.cpu}%"
 
     condition_threshold {
-      # Match nodes from both blue and green pools by prefix on the random suffix shared by both pool names.
-      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" =~ \"^${random_string.resource_suffix.result}-.*\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
+      # Match nodes from the currently-enabled blue/green pools by exact name (regex alternation).
+      filter          = "resource.type = \"gce_instance\" AND metadata.user_labels.\"goog-k8s-node-pool-name\" =~ \"^(${join("|", local.monitored_node_pool_names)})$\" AND metric.type = \"compute.googleapis.com/instance/cpu/utilization\""
       duration        = "60s"
       comparison      = "COMPARISON_GT"
       threshold_value = var.resource_thresholds.cpu / 100.0
