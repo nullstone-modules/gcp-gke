@@ -18,6 +18,16 @@ output "cluster_name" {
   description = "string ||| The name of the GKE cluster"
 }
 
+output "blue_node_pool_name" {
+  value       = try(google_container_node_pool.blue[0].name, "")
+  description = "string ||| The name of the blue node pool, or empty string when blue is disabled."
+}
+
+output "green_node_pool_name" {
+  value       = try(google_container_node_pool.green[0].name, "")
+  description = "string ||| The name of the green node pool, or empty string when green is disabled."
+}
+
 output "cluster_endpoint" {
   value       = google_container_cluster.primary.endpoint
   description = "string ||| The IP address of this cluster's Kubernetes master."

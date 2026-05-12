@@ -1,3 +1,7 @@
+# 0.5.2 (May 12, 2026)
+* Fixed variable check when the blue and green names are null.
+* Added blue and green node pool names to outputs.
+
 # 0.5.1 (May 12, 2026)
 * Node pool names now default to `<block_ref>-<color>-...` so the block ref is visible in GCP. Each pool exposes an optional `name` field to pin the pool's exact name (≤40 chars per GKE's limit).
 * The existing pool is migrated into `blue[0]` via a `moved` block. **Existing workspaces should set `blue_node_pool.name` to the legacy pool's exact name** to prevent the pool from being rebuilt. Also pass the workspace's current machine_type/disk_size values into `blue_node_pool`. See README for the lookup procedure and the caveat about clearing `name` before future swaps.
