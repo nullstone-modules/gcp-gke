@@ -4,12 +4,12 @@ locals {
   // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
   zones = slice(local.available_zones, 0, min(var.num_node_zones, length(local.available_zones)))
 
-  // Default node pool name_prefix derived from the block ref (e.g., "my-app-blue-"). Used when the
-  // caller does not pin an exact `name` via var.{blue,green}_node_pool.name. The `name` override is
-  // the migration escape hatch — existing workspaces set it to the legacy pool's exact name to keep
-  // the pool intact across the state move.
-  default_blue_name_prefix  = "${local.block_ref}-blue-"
-  default_green_name_prefix = "${local.block_ref}-green-"
+  // Default node pool name_prefix uses the workspace's random suffix (e.g., "abcde-blue-"). Used when
+  // the caller does not pin an exact `name` via var.{blue,green}_node_pool.name. The `name` override
+  // is the migration escape hatch — existing workspaces set it to the legacy pool's exact name to
+  // keep the pool intact across the state move.
+  default_blue_name_prefix  = "${random_string.resource_suffix.result}-blue-"
+  default_green_name_prefix = "${random_string.resource_suffix.result}-green-"
 }
 
 resource "google_container_cluster" "primary" {

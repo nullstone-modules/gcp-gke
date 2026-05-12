@@ -20,7 +20,7 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Configuration for the blue node pool.
   - Fields:
     - `enabled` (bool, default `true`)
-    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<block_ref>-blue-` plus a provider-appended unique suffix. See [Migrating from a single-pool setup](#migrating-from-a-single-pool-setup).
+    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<random-suffix>-blue-` plus a provider-appended unique suffix. See [Migrating from a single-pool setup](#migrating-from-a-single-pool-setup).
     - `machine_type` (string, default `n2-standard-2`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
@@ -29,14 +29,14 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Configuration for the green node pool.
   - Fields:
     - `enabled` (bool, default `false`)
-    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<block_ref>-green-` plus a provider-appended unique suffix.
+    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<random-suffix>-green-` plus a provider-appended unique suffix.
     - `machine_type` (string, default `n2-standard-2`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
 
 At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true.
 
-GKE caps node pool names at 40 characters. When `name` is unset, the provider appends a 26-char unique suffix to the default `<block_ref>-<color>-` prefix, so `block_ref` should be ≤8 chars for the default naming to fit. When `name` is set, the full value must be ≤40 chars.
+GKE caps node pool names at 40 characters. When `name` is unset, the provider appends a 26-char unique suffix to the default `<random-suffix>-<color>-` prefix (12 chars max for green, 11 for blue) — well within the limit. When `name` is set, the full value must be ≤40 chars.
 
 ## Migrating from a single-pool setup
 
@@ -61,7 +61,7 @@ Pre-0.5.0 versions of this module had a single `primary_nodes` node pool. The 0.
    ```
 3. `terraform plan` should show: 1 state move, 0 resource changes.
 
-**Future swaps:** with an explicit `name` set, blue cannot be rebuilt in place via `create_before_destroy` (two pools cannot share a name). When you next want to roll a config change, clear the `name` override before triggering a rebuild — the pool will then be recreated with the generated `<block_ref>-blue-...` naming and `create_before_destroy` will work as designed.
+**Future swaps:** with an explicit `name` set, blue cannot be rebuilt in place via `create_before_destroy` (two pools cannot share a name). When you next want to roll a config change, clear the `name` override before triggering a rebuild — the pool will then be recreated with the generated `<random-suffix>-blue-...` naming and `create_before_destroy` will work as designed.
 
 ## Rolling node pool changes
 

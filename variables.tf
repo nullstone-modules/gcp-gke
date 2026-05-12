@@ -31,7 +31,7 @@ variable "blue_node_pool" {
   description = <<EOF
 Configuration for the "blue" node pool.
 - enabled: When true (default), the blue node pool is provisioned.
-- name: Optional exact node pool name. When unset, the pool name is generated from "<block_ref>-blue-"
+- name: Optional exact node pool name. When unset, the pool name is generated from "<random-suffix>-blue-"
   plus a unique suffix appended by the provider. Workspaces migrating from a single-pool setup should
   set this to the existing pool's exact name (find it via `gcloud container node-pools list --cluster <name>`
   or `terraform state show google_container_node_pool.primary_nodes`) to pin the pool and avoid recreation
@@ -61,7 +61,7 @@ variable "green_node_pool" {
   description = <<EOF
 Configuration for the "green" node pool.
 - enabled: When true, the green node pool is provisioned alongside blue. Defaults to false.
-- name: Optional exact node pool name. When unset, the pool name is generated from "<block_ref>-green-"
+- name: Optional exact node pool name. When unset, the pool name is generated from "<random-suffix>-green-"
   plus a unique suffix appended by the provider. GKE caps node pool names at 40 chars.
   NOTE: With an explicit `name`, blue/green swaps that rebuild this pool require you to clear `name`
   first (or supply a new one), since GKE cannot have two pools with the same name during create_before_destroy.

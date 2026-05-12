@@ -1,3 +1,6 @@
+# 0.5.6 (May 12, 2026)
+* Changed format of generated node pool names to fix name limits.
+
 # 0.5.5 (May 12, 2026)
 * Fixed cpu monitoring alert filter syntax: use `= monitoring.regex.full_match("...")` instead of `=~`, which GCP's filter language does not support on `metadata.user_labels`.
 
