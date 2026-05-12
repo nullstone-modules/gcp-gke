@@ -1,3 +1,6 @@
+# 0.5.3 (May 12, 2026)
+* Fixed variable validation syntax.
+
 # 0.5.2 (May 12, 2026)
 * Fixed variable check when the blue and green names are null.
 * Added blue and green node pool names to outputs.

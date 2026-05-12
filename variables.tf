@@ -45,7 +45,7 @@ Pair with `green_node_pool` to roll node pool config changes without downtime. S
 EOF
 
   validation {
-    condition     = var.blue_node_pool.name == null || length(coalesce(var.blue_node_pool.name, "")) <= 40
+    condition     = var.blue_node_pool.name == null ? true : length(var.blue_node_pool.name) <= 40
     error_message = "blue_node_pool.name must be 40 characters or fewer (GKE node pool name limit)."
   }
 }
@@ -72,7 +72,7 @@ Pair with `blue_node_pool` to roll node pool config changes without downtime. Se
 EOF
 
   validation {
-    condition     = var.green_node_pool.name == null || length(coalesce(var.green_node_pool.name, "")) <= 40
+    condition     = var.green_node_pool.name == null ? true : length(var.green_node_pool.name) <= 40
     error_message = "green_node_pool.name must be 40 characters or fewer (GKE node pool name limit)."
   }
 }
