@@ -1,3 +1,7 @@
+# 0.5.1 (May 12, 2026)
+* Node pool names now default to `<block_ref>-<color>-...` so the block ref is visible in GCP. Each pool exposes an optional `name` field to pin the pool's exact name (≤40 chars per GKE's limit).
+* The existing pool is migrated into `blue[0]` via a `moved` block. **Existing workspaces should set `blue_node_pool.name` to the legacy pool's exact name** to prevent the pool from being rebuilt. Also pass the workspace's current machine_type/disk_size values into `blue_node_pool`. See README for the lookup procedure and the caveat about clearing `name` before future swaps.
+
 # 0.5.0 (May 12, 2026)
 * Split the node pool into two node pools (`blue`, `green`) that can be used to make changes to node pools without downtime.
 * **Breaking:** Removed `var.node_machine_type` and `var.node_disk_size`. Use `var.blue_node_pool = { machine_type = ..., disk_size = ... }` and `var.green_node_pool = { ... }` instead.

@@ -20,7 +20,7 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Configuration for the blue node pool.
   - Fields:
     - `enabled` (bool, default `true`)
-    - `name_prefix` (string, optional) — overrides the default `<block_ref>-blue-` prefix. Must be ≤14 chars. See [Migrating from a single-pool setup](#migrating-from-a-single-pool-setup).
+    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<block_ref>-blue-` plus a provider-appended unique suffix. See [Migrating from a single-pool setup](#migrating-from-a-single-pool-setup).
     - `machine_type` (string, default `n2-standard-2`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
@@ -29,35 +29,39 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Configuration for the green node pool.
   - Fields:
     - `enabled` (bool, default `false`)
-    - `name_prefix` (string, optional) — overrides the default `<block_ref>-green-` prefix. Must be ≤14 chars.
+    - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<block_ref>-green-` plus a provider-appended unique suffix.
     - `machine_type` (string, default `n2-standard-2`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
 
 At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true.
 
-GKE caps node pool names at 40 characters; the terraform-google provider appends a 26-character unique suffix, so the `name_prefix` budget is 14 characters. The default `<block_ref>-<color>-` naming fits as long as `block_ref` is ≤8 chars.
+GKE caps node pool names at 40 characters. When `name` is unset, the provider appends a 26-char unique suffix to the default `<block_ref>-<color>-` prefix, so `block_ref` should be ≤8 chars for the default naming to fit. When `name` is set, the full value must be ≤40 chars.
 
 ## Migrating from a single-pool setup
 
-Pre-0.5.0 versions of this module had a single `primary_nodes` node pool. The 0.5.0 upgrade splits that into `blue` + `green`. A `moved` block migrates state from `primary_nodes` to `blue[0]`. To avoid replacing the existing pool on first apply, pin blue's `name_prefix` to the legacy value:
+Pre-0.5.0 versions of this module had a single `primary_nodes` node pool. The 0.5.0 upgrade splits that into `blue` + `green`. A `moved` block migrates state from `primary_nodes` to `blue[0]`. To prevent the existing pool from being replaced on first apply, pin blue's `name` to the legacy pool's exact name:
 
-1. Read the legacy prefix from state:
+1. Read the existing pool name:
    ```sh
-   terraform state show google_container_node_pool.primary_nodes | grep name_prefix
+   gcloud container node-pools list --cluster <cluster-name> --region <region>
    ```
-   You'll see something like `name_prefix = "abcde-"`.
+   Or from terraform state:
+   ```sh
+   terraform state show google_container_node_pool.primary_nodes | grep '^\s*name '
+   ```
+   You'll see something like `name = "abcde-12345678901234567890"`.
 2. Set blue's overrides in your workspace tfvars to match today's deployment:
    ```hcl
    blue_node_pool = {
-     name_prefix  = "abcde-"               # from step 1
+     name         = "abcde-12345678901234567890"   # from step 1, exact match
      machine_type = "<current node_machine_type>"
      disk_size    = <current node_disk_size>
    }
    ```
 3. `terraform plan` should show: 1 state move, 0 resource changes.
 
-On a future swap (re-enabling blue with new config), you can drop the `name_prefix` override to adopt the new `<block_ref>-blue-` naming — that swap will rebuild the pool anyway.
+**Future swaps:** with an explicit `name` set, blue cannot be rebuilt in place via `create_before_destroy` (two pools cannot share a name). When you next want to roll a config change, clear the `name` override before triggering a rebuild — the pool will then be recreated with the generated `<block_ref>-blue-...` naming and `create_before_destroy` will work as designed.
 
 ## Rolling node pool changes
 

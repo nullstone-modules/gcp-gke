@@ -4,11 +4,12 @@ locals {
   // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
   zones = slice(local.available_zones, 0, min(var.num_node_zones, length(local.available_zones)))
 
-  // Node pool name_prefix is derived from the block ref (e.g., "my-app-blue-"), or overridden
-  // by the caller via var.{blue,green}_node_pool.name_prefix. The override is the migration
-  // escape hatch — existing workspaces set it to the legacy pool's prefix to keep the pool intact.
-  blue_name_prefix  = var.blue_node_pool.name_prefix != null ? var.blue_node_pool.name_prefix : "${local.block_ref}-blue-"
-  green_name_prefix = var.green_node_pool.name_prefix != null ? var.green_node_pool.name_prefix : "${local.block_ref}-green-"
+  // Default node pool name_prefix derived from the block ref (e.g., "my-app-blue-"). Used when the
+  // caller does not pin an exact `name` via var.{blue,green}_node_pool.name. The `name` override is
+  // the migration escape hatch — existing workspaces set it to the legacy pool's exact name to keep
+  // the pool intact across the state move.
+  default_blue_name_prefix  = "${local.block_ref}-blue-"
+  default_green_name_prefix = "${local.block_ref}-green-"
 }
 
 resource "google_container_cluster" "primary" {
@@ -89,13 +90,16 @@ resource "google_container_cluster" "primary" {
 # via `var.blue_node_pool.enabled` and `var.green_node_pool.enabled`. This enables no-downtime
 # rollouts of machine type / disk size changes via the blue/green swap pattern documented in the
 # README. The `moved` block at the bottom of this file migrates the legacy `primary_nodes` state
-# into `blue[0]`; existing workspaces should set `var.blue_node_pool.name_prefix` to the legacy
-# pool's prefix to keep that pool intact (otherwise it gets replaced via create_before_destroy).
+# into `blue[0]`; existing workspaces should set `var.blue_node_pool.name` to the legacy pool's
+# exact name to keep that pool intact (otherwise it gets replaced via create_before_destroy).
 
 resource "google_container_node_pool" "blue" {
   count = var.blue_node_pool.enabled ? 1 : 0
 
-  name_prefix        = local.blue_name_prefix
+  # When var.blue_node_pool.name is set, use that exact name (pinned). Otherwise, fall back to the
+  # default name_prefix and let the provider append a unique suffix.
+  name               = var.blue_node_pool.name
+  name_prefix        = var.blue_node_pool.name == null ? local.default_blue_name_prefix : null
   location           = data.google_compute_zones.available.region
   cluster            = google_container_cluster.primary.name
   initial_node_count = 1
@@ -114,8 +118,8 @@ resource "google_container_node_pool" "blue" {
     ignore_changes = [initial_node_count]
 
     precondition {
-      condition     = length(local.blue_name_prefix) <= 14
-      error_message = "blue node pool name_prefix '${local.blue_name_prefix}' is ${length(local.blue_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Set var.blue_node_pool.name_prefix to a shorter value."
+      condition     = var.blue_node_pool.name != null || length(local.default_blue_name_prefix) <= 14
+      error_message = "Default blue node pool name_prefix '${local.default_blue_name_prefix}' is ${length(local.default_blue_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Either rename your nullstone block or set var.blue_node_pool.name explicitly."
     }
   }
 
@@ -143,7 +147,8 @@ resource "google_container_node_pool" "blue" {
 resource "google_container_node_pool" "green" {
   count = var.green_node_pool.enabled ? 1 : 0
 
-  name_prefix        = local.green_name_prefix
+  name               = var.green_node_pool.name
+  name_prefix        = var.green_node_pool.name == null ? local.default_green_name_prefix : null
   location           = data.google_compute_zones.available.region
   cluster            = google_container_cluster.primary.name
   initial_node_count = 1
@@ -161,8 +166,8 @@ resource "google_container_node_pool" "green" {
     ignore_changes = [initial_node_count]
 
     precondition {
-      condition     = length(local.green_name_prefix) <= 14
-      error_message = "green node pool name_prefix '${local.green_name_prefix}' is ${length(local.green_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Set var.green_node_pool.name_prefix to a shorter value."
+      condition     = var.green_node_pool.name != null || length(local.default_green_name_prefix) <= 14
+      error_message = "Default green node pool name_prefix '${local.default_green_name_prefix}' is ${length(local.default_green_name_prefix)} chars but GKE caps node pool names at 40 chars after the provider's 26-char unique suffix (max 14 for the prefix). Either rename your nullstone block or set var.green_node_pool.name explicitly."
     }
   }
 

@@ -23,7 +23,7 @@ EOF
 variable "blue_node_pool" {
   type = object({
     enabled      = optional(bool, true)
-    name_prefix  = optional(string)
+    name         = optional(string)
     machine_type = optional(string, "n2-standard-2")
     disk_size    = optional(number, 50)
   })
@@ -31,11 +31,13 @@ variable "blue_node_pool" {
   description = <<EOF
 Configuration for the "blue" node pool.
 - enabled: When true (default), the blue node pool is provisioned.
-- name_prefix: Optional override for the node pool name_prefix. When unset, defaults to "<block_ref>-blue-".
-  Workspaces migrating from a single-pool setup should set this to the existing pool's prefix
-  (e.g., "<random-suffix>-") to avoid recreating the pool on first apply. Find the current value with
-  `terraform state show google_container_node_pool.primary_nodes`. GKE caps node pool names at 40 chars
-  and the provider appends a 26-char unique suffix, so name_prefix must be <= 14 chars.
+- name: Optional exact node pool name. When unset, the pool name is generated from "<block_ref>-blue-"
+  plus a unique suffix appended by the provider. Workspaces migrating from a single-pool setup should
+  set this to the existing pool's exact name (find it via `gcloud container node-pools list --cluster <name>`
+  or `terraform state show google_container_node_pool.primary_nodes`) to pin the pool and avoid recreation
+  on first apply. GKE caps node pool names at 40 chars.
+  NOTE: With an explicit `name`, blue/green swaps that rebuild this pool require you to clear `name` first
+  (or supply a new one), since GKE cannot have two pools with the same name during create_before_destroy.
 - machine_type: Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types.
 - disk_size: The disk size of each node in GB. This disk is used for OS files, logs, and images.
 
@@ -43,15 +45,15 @@ Pair with `green_node_pool` to roll node pool config changes without downtime. S
 EOF
 
   validation {
-    condition     = var.blue_node_pool.name_prefix == null || length(var.blue_node_pool.name_prefix) <= 14
-    error_message = "blue_node_pool.name_prefix must be 14 characters or fewer (GKE caps node pool names at 40 chars; the provider appends a 26-char unique suffix)."
+    condition     = var.blue_node_pool.name == null || length(var.blue_node_pool.name) <= 40
+    error_message = "blue_node_pool.name must be 40 characters or fewer (GKE node pool name limit)."
   }
 }
 
 variable "green_node_pool" {
   type = object({
     enabled      = optional(bool, false)
-    name_prefix  = optional(string)
+    name         = optional(string)
     machine_type = optional(string, "n2-standard-2")
     disk_size    = optional(number, 50)
   })
@@ -59,9 +61,10 @@ variable "green_node_pool" {
   description = <<EOF
 Configuration for the "green" node pool.
 - enabled: When true, the green node pool is provisioned alongside blue. Defaults to false.
-- name_prefix: Optional override for the node pool name_prefix. When unset, defaults to "<block_ref>-green-".
-  GKE caps node pool names at 40 chars and the provider appends a 26-char unique suffix, so name_prefix
-  must be <= 14 chars.
+- name: Optional exact node pool name. When unset, the pool name is generated from "<block_ref>-green-"
+  plus a unique suffix appended by the provider. GKE caps node pool names at 40 chars.
+  NOTE: With an explicit `name`, blue/green swaps that rebuild this pool require you to clear `name`
+  first (or supply a new one), since GKE cannot have two pools with the same name during create_before_destroy.
 - machine_type: Node instance machine type. See https://cloud.google.com/compute/docs/machine-resource#predefined_machine_types.
 - disk_size: The disk size of each node in GB. This disk is used for OS files, logs, and images.
 
@@ -69,8 +72,8 @@ Pair with `blue_node_pool` to roll node pool config changes without downtime. Se
 EOF
 
   validation {
-    condition     = var.green_node_pool.name_prefix == null || length(var.green_node_pool.name_prefix) <= 14
-    error_message = "green_node_pool.name_prefix must be 14 characters or fewer (GKE caps node pool names at 40 chars; the provider appends a 26-char unique suffix)."
+    condition     = var.green_node_pool.name == null || length(var.green_node_pool.name) <= 40
+    error_message = "green_node_pool.name must be 40 characters or fewer (GKE node pool name limit)."
   }
 }
 
