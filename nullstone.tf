@@ -24,7 +24,7 @@ resource "random_string" "resource_suffix" {
 }
 
 locals {
-  tags          = data.ns_workspace.this.tags
+  labels        = data.ns_workspace.this.gcp_labels
   stack_name    = data.ns_workspace.this.stack_name
   block_name    = data.ns_workspace.this.block_name
   env_name      = data.ns_workspace.this.env_name
