@@ -1,3 +1,7 @@
+# 0.6.0 (Jul 02, 2026)
+* `var.enable_managed_otel` now enables the Google-managed OpenTelemetry collector directly through Terraform via `managed_opentelemetry_config` (scope `COLLECTION_AND_INSTRUMENTATION_COMPONENTS`); the manual `gcloud container clusters update --enable-managed-otel` step is no longer needed.
+* Switched only the `google_container_cluster.primary` resource to the `google-beta` provider (required for `managed_opentelemetry_config`). Requires GKE 1.34.1-gke.2178000+.
+
 # 0.5.6 (May 12, 2026)
 * Changed format of generated node pool names to fix name limits.
 

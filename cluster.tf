@@ -13,6 +13,10 @@ locals {
 }
 
 resource "google_container_cluster" "primary" {
+  # google-beta is required for managed_opentelemetry_config (see var.enable_managed_otel).
+  # Only this resource is switched to google-beta; all other resources stay on google.
+  provider = google-beta
+
   name                     = local.resource_name
   resource_labels          = local.resource_labels
   location                 = data.google_compute_zones.available.region
@@ -72,10 +76,15 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  # NOTE: This doesn't exist in the Terraform provider yet
-  # observability_config {
-  #   managed_otel = true
-  # }
+  # Google-managed OpenTelemetry collector. Requires the google-beta provider (see provider above)
+  # and GKE version 1.34.1-gke.2178000+.
+  dynamic "managed_opentelemetry_config" {
+    for_each = var.enable_managed_otel ? [1] : []
+
+    content {
+      scope = "COLLECTION_AND_INSTRUMENTATION_COMPONENTS"
+    }
+  }
 
   gateway_api_config {
     channel = "CHANNEL_STANDARD"
