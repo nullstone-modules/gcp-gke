@@ -34,7 +34,11 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
     - `disk_size` (number, default `50`)
   - Default: `{}`
 
-At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true.
+- `min_master_version: string`
+  - Minimum version of the Kubernetes master (e.g. `"1.34"`). When unset, GKE picks the release channel default.
+  - Default: `null`
+
+At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true. The blue/green pools are untainted, so system workloads (kube-dns, external-secrets, metrics agents) always have somewhere to schedule — additional tainted pools (e.g. the `gcp-gke-gpu-node-pool` block) rely on this.
 
 GKE caps node pool names at 40 characters. When `name` is unset, the provider appends a 26-char unique suffix to the default `<random-suffix>-<color>-` prefix (12 chars max for green, 11 for blue) — well within the limit. When `name` is set, the full value must be ≤40 chars.
 

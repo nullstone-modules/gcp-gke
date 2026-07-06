@@ -28,6 +28,11 @@ output "green_node_pool_name" {
   description = "string ||| The name of the green node pool, or empty string when green is disabled."
 }
 
+output "node_service_account_email" {
+  value       = google_service_account.cluster.email
+  description = "string ||| The email of the service account assigned to cluster nodes. External node pool blocks (e.g. gcp-gke-gpu-node-pool) reuse this service account."
+}
+
 output "cluster_endpoint" {
   value       = google_container_cluster.primary.endpoint
   description = "string ||| The IP address of this cluster's Kubernetes master."

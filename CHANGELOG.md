@@ -1,3 +1,7 @@
+# 0.6.2 (Jul 06, 2026)
+* Added `var.min_master_version` to set a minimum control plane version (required for G4 GPU node pools, which need GKE 1.34+).
+* Added `node_service_account_email` output so external node pool blocks (e.g. `gcp-gke-gpu-node-pool`) can reuse the cluster's node service account.
+
 # 0.6.1 (Jul 02, 2026)
 * Switched to use `ns_workspace.gcp_labels` for GCP labels.
 

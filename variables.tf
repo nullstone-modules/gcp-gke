@@ -77,6 +77,17 @@ EOF
   }
 }
 
+variable "min_master_version" {
+  type        = string
+  default     = null
+  description = <<EOF
+The minimum version of the Kubernetes master (e.g. "1.34").
+When unset, GKE picks the default version for the cluster's release channel.
+Set this when a workload requires a newer control plane than the channel default
+(e.g. GPU node pools using G4 machine types require GKE 1.34+).
+EOF
+}
+
 variable "resource_thresholds" {
   type = object({
     cpu = number

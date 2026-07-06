@@ -30,6 +30,8 @@ resource "google_container_cluster" "primary" {
 
   datapath_provider = var.enable_dataplane_v2 ? "ADVANCED_DATAPATH" : null
 
+  min_master_version = var.min_master_version
+
   lifecycle {
     precondition {
       condition     = var.blue_node_pool.enabled || var.green_node_pool.enabled
