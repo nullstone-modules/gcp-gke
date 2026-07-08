@@ -12,6 +12,15 @@ resource "google_project_iam_member" "cluster_base" {
   member  = "serviceAccount:${google_service_account.cluster.email}"
 }
 
+# GKE security posture recommends this predefined role on the node service account
+# ("Grant roles/container.defaultNodeServiceAccount ... for non-degraded operations").
+# It bundles the minimum node permissions (logging, metrics, metadata, image pull).
+resource "google_project_iam_member" "cluster_default_node" {
+  project = local.project_id
+  role    = "roles/container.defaultNodeServiceAccount"
+  member  = "serviceAccount:${google_service_account.cluster.email}"
+}
+
 resource "google_project_iam_member" "cluster_logging" {
   project = local.project_id
   role    = "roles/logging.logWriter"
