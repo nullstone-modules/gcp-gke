@@ -1,3 +1,6 @@
+# 0.6.4 (Jul 10, 2026)
+* Updated cluster and node pool to include `gcp_labels` from Nullstone.
+
 # 0.6.3 (Jul 06, 2026)
 * Added `roles/container.defaultNodeServiceAccount` to the node service account.
 

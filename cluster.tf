@@ -18,7 +18,7 @@ resource "google_container_cluster" "primary" {
   provider = google-beta
 
   name                     = local.resource_name
-  resource_labels          = local.resource_labels
+  resource_labels          = local.labels
   location                 = data.google_compute_zones.available.region
   initial_node_count       = 1
   remove_default_node_pool = true
@@ -138,8 +138,8 @@ resource "google_container_node_pool" "blue" {
     machine_type    = var.blue_node_pool.machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    labels          = local.labels
-    resource_labels = local.resource_labels
+    labels          = local.k8s_labels
+    resource_labels = local.labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
     disk_size_gb = var.blue_node_pool.disk_size
@@ -186,8 +186,8 @@ resource "google_container_node_pool" "green" {
     machine_type    = var.green_node_pool.machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    labels          = local.labels
-    resource_labels = local.resource_labels
+    labels          = local.k8s_labels
+    resource_labels = local.labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
     disk_size_gb = var.green_node_pool.disk_size
