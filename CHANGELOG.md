@@ -1,3 +1,6 @@
+# 0.6.8 (Jul 10, 2026)
+* Fixed labels from failing when data classification is not set.
+
 # 0.6.7 (Jul 10, 2026)
 * Fixed references to node labels.
 
