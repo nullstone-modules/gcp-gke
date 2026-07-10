@@ -30,11 +30,11 @@ locals {
   // (rather than passing k8s_labels straight through) because GKE rejects node labels under the
   // reserved kubernetes.io / k8s.io namespaces, e.g. the app.kubernetes.io/* recommended labels.
   node_labels = {
-    environment        = data.ns_workspace.this.k8s_labels["environment"]
-    owner              = data.ns_workspace.this.k8s_labels["owner"]
-    project            = data.ns_workspace.this.k8s_labels["project"]
-    dataclassification = data.ns_workspace.this.k8s_labels["dataclassification"]
-    application        = data.ns_workspace.this.k8s_labels["application"]
+    environment        = local.env_name
+    owner              = local.labels["owner"]
+    project            = local.stack_name
+    dataclassification = local.labels["dataclassification"]
+    application        = local.block_name
 
     "nullstone.io/env"   = local.env_name
     "nullstone.io/stack" = local.stack_name

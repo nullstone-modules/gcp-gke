@@ -1,3 +1,6 @@
+# 0.6.7 (Jul 10, 2026)
+* Fixed references to node labels.
+
 # 0.6.6 (Jul 10, 2026)
 * Removed invalid node labels from cluster and node pool.
 
