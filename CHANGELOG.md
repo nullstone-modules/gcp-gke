@@ -1,3 +1,7 @@
+# 0.6.5 (Jul 10, 2026)
+* Convert to OpenTofu.
+* Upgraded providers.
+
 # 0.6.4 (Jul 10, 2026)
 * Updated cluster and node pool to include `gcp_labels` from Nullstone.
 
