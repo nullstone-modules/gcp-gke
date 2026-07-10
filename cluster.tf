@@ -138,7 +138,7 @@ resource "google_container_node_pool" "blue" {
     machine_type    = var.blue_node_pool.machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    labels          = local.k8s_labels
+    labels          = local.node_labels
     resource_labels = local.labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 
@@ -186,7 +186,7 @@ resource "google_container_node_pool" "green" {
     machine_type    = var.green_node_pool.machine_type
     service_account = google_service_account.cluster.email
     oauth_scopes    = ["https://www.googleapis.com/auth/cloud-platform"]
-    labels          = local.k8s_labels
+    labels          = local.node_labels
     resource_labels = local.labels
     tags            = ["gke-node", "${local.resource_name}-gke"]
 

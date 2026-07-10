@@ -1,3 +1,6 @@
+# 0.6.6 (Jul 10, 2026)
+* Removed invalid node labels from cluster and node pool.
+
 # 0.6.5 (Jul 10, 2026)
 * Convert to OpenTofu.
 * Upgraded providers.
