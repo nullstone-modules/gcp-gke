@@ -24,7 +24,7 @@ variable "blue_node_pool" {
   type = object({
     enabled      = optional(bool, true)
     name         = optional(string)
-    machine_type = optional(string, "n2-standard-2")
+    machine_type = optional(string, "n2-standard-4")
     disk_size    = optional(number, 50)
   })
   default     = {}
@@ -54,7 +54,7 @@ variable "green_node_pool" {
   type = object({
     enabled      = optional(bool, false)
     name         = optional(string)
-    machine_type = optional(string, "n2-standard-2")
+    machine_type = optional(string, "n2-standard-4")
     disk_size    = optional(number, 50)
   })
   default     = {}

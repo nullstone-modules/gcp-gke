@@ -1,3 +1,6 @@
+# 0.6.9 (Aug 03, 2026)
+* Set default node pool machine types to `n2-standard-4` to handle base system load.
+
 # 0.6.8 (Jul 10, 2026)
 * Fixed labels from failing when data classification is not set.
 
