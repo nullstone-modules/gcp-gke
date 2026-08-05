@@ -60,18 +60,26 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  # GKE cost allocation. Adds Kubernetes metadata (cluster, namespace, workload) to the
+  # Cloud Billing detailed usage export, which is what makes per-namespace cost attribution
+  # possible. Free to enable, and there is no backfill, so it only labels usage from the
+  # moment it is turned on.
+  cost_management_config {
+    enabled = true
+  }
+
   addons_config {
     gcs_fuse_csi_driver_config {
-      enabled = true
+      enabled = var.enable_gcs_fuse_csi_driver
     }
     gce_persistent_disk_csi_driver_config {
       enabled = true
     }
     gcp_filestore_csi_driver_config {
-      enabled = true
+      enabled = var.enable_filestore_csi_driver
     }
     config_connector_config {
-      enabled = true
+      enabled = var.enable_config_connector
     }
     network_policy_config {
       disabled = var.enable_dataplane_v2 ? true : false

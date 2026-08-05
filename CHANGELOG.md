@@ -1,3 +1,8 @@
+# 0.6.10
+
+* Enabled GKE cost allocation (`cost_management_config`) on the cluster. This adds Kubernetes metadata (cluster, namespace, workload) to the Cloud Billing detailed usage export, so GKE spend can be attributed per namespace and per workload. Free to enable, and it does not affect scheduling. Note there is no backfill, so usage is only labelled from the moment it is enabled.
+* Added `var.enable_gcs_fuse_csi_driver`, `var.enable_filestore_csi_driver` and `var.enable_config_connector` to make those addons optional. All default to `true`, so existing behavior is unchanged. Each runs pods on every node, so turning off the ones you don't use frees node capacity.
+
 # 0.6.9 (Aug 03, 2026)
 * Set default node pool machine types to `n2-standard-4` to handle base system load.
 

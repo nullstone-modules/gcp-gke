@@ -111,6 +111,39 @@ WARNING: Changing this will result in a recreation of the cluster without downti
 EOF
 }
 
+variable "enable_gcs_fuse_csi_driver" {
+  type    = bool
+  default = true
+
+  description = <<EOF
+Enable the Cloud Storage FUSE CSI driver addon, which lets pods mount GCS buckets as volumes.
+
+Runs a DaemonSet on every node, so disabling it on clusters that do not mount buckets frees node capacity.
+EOF
+}
+
+variable "enable_filestore_csi_driver" {
+  type    = bool
+  default = true
+
+  description = <<EOF
+Enable the Filestore CSI driver addon, which lets pods use Filestore instances as volumes.
+
+Runs a DaemonSet on every node, so disabling it on clusters with no Filestore volumes frees node capacity.
+EOF
+}
+
+variable "enable_config_connector" {
+  type    = bool
+  default = true
+
+  description = <<EOF
+Enable the Config Connector addon, which manages Google Cloud resources through Kubernetes CRDs.
+
+This installs a large set of CRDs plus controller pods in the `cnrm-system` namespace. Disable it if you provision cloud resources through Terraform rather than through Config Connector.
+EOF
+}
+
 variable "enable_managed_otel" {
   type    = bool
   default = false
