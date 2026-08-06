@@ -38,17 +38,14 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Minimum version of the Kubernetes master (e.g. `"1.34"`). When unset, GKE picks the release channel default.
   - Default: `null`
 
-- `enable_gcs_fuse_csi_driver: bool`
-  - Enable the Cloud Storage FUSE CSI driver addon, which lets pods mount GCS buckets as volumes. Runs a DaemonSet on every node, so disabling it on clusters that do not mount buckets frees node capacity.
-  - Default: `true`
-
-- `enable_filestore_csi_driver: bool`
-  - Enable the Filestore CSI driver addon, which lets pods use Filestore instances as volumes. Runs a DaemonSet on every node, so disabling it on clusters with no Filestore volumes frees node capacity.
-  - Default: `true`
-
-- `enable_config_connector: bool`
-  - Enable the Config Connector addon, which manages Google Cloud resources through Kubernetes CRDs. Installs a large set of CRDs plus controller pods in `cnrm-system`. Disable it if you provision cloud resources through Terraform rather than Config Connector.
-  - Default: `true`
+- `enabled_addons: list(string)`
+  - List of GKE addons to enable on the cluster. Addons omitted from this list are disabled. Every addon reserves node capacity through pod requests whether a cluster uses it or not, so trimming the list frees room for workloads. The CSI drivers run a DaemonSet on each node, and Config Connector runs a fixed set of controllers alongside a large set of CRDs.
+  - Supported names:
+    - `gcs-fuse-csi-driver` — Cloud Storage FUSE CSI driver, for mounting GCS buckets as volumes.
+    - `filestore-csi-driver` — Filestore CSI driver, for using Filestore instances as volumes.
+    - `config-connector` — Config Connector, which manages Google Cloud resources through Kubernetes CRDs. Installs a large set of CRDs plus controller pods in `cnrm-system`.
+  - Two addons stay outside this list. The Persistent Disk CSI driver is always enabled, since GKE enables it by default on new clusters and most workloads need it for PersistentVolumeClaims. The network policy addon is driven by `enable_dataplane_v2`.
+  - Default: all three addons enabled
 
 At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true. The blue/green pools are untainted, so system workloads (kube-dns, external-secrets, metrics agents) always have somewhere to schedule — additional tainted pools (e.g. the `gcp-gke-gpu-node-pool` block) rely on this.
 

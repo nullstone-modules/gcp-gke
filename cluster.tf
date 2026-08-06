@@ -1,4 +1,6 @@
 locals {
+  enabled_addons = toset(var.enabled_addons)
+
   // Select the zones to place the node pool
   // We choose from the list available zones in this region
   // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
@@ -70,16 +72,18 @@ resource "google_container_cluster" "primary" {
 
   addons_config {
     gcs_fuse_csi_driver_config {
-      enabled = var.enable_gcs_fuse_csi_driver
+      enabled = contains(local.enabled_addons, "gcs-fuse-csi-driver")
     }
+    # Left enabled: GKE turns this on by default for new clusters, and most workloads
+    # need it for PersistentVolumeClaims.
     gce_persistent_disk_csi_driver_config {
       enabled = true
     }
     gcp_filestore_csi_driver_config {
-      enabled = var.enable_filestore_csi_driver
+      enabled = contains(local.enabled_addons, "filestore-csi-driver")
     }
     config_connector_config {
-      enabled = var.enable_config_connector
+      enabled = contains(local.enabled_addons, "config-connector")
     }
     network_policy_config {
       disabled = var.enable_dataplane_v2 ? true : false
