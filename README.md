@@ -21,7 +21,7 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Fields:
     - `enabled` (bool, default `true`)
     - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<random-suffix>-blue-` plus a provider-appended unique suffix. See [Migrating from a single-pool setup](#migrating-from-a-single-pool-setup).
-    - `machine_type` (string, default `n2-standard-2`)
+    - `machine_type` (string, default `n2-standard-4`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
 
@@ -30,7 +30,7 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Fields:
     - `enabled` (bool, default `false`)
     - `name` (string, optional) — pins the exact node pool name. When unset, the name is generated from `<random-suffix>-green-` plus a provider-appended unique suffix.
-    - `machine_type` (string, default `n2-standard-2`)
+    - `machine_type` (string, default `n2-standard-4`)
     - `disk_size` (number, default `50`)
   - Default: `{}`
 
@@ -38,9 +38,27 @@ size without downtime, see [Rolling node pool changes](#rolling-node-pool-change
   - Minimum version of the Kubernetes master (e.g. `"1.34"`). When unset, GKE picks the release channel default.
   - Default: `null`
 
+- `enabled_addons: list(string)`
+  - List of GKE addons to enable on the cluster. Addons omitted from this list are disabled. Every addon reserves node capacity through pod requests whether a cluster uses it or not, so trimming the list frees room for workloads. The CSI drivers run a DaemonSet on each node, and Config Connector runs a fixed set of controllers alongside a large set of CRDs.
+  - Supported names:
+    - `gcs-fuse-csi-driver` — Cloud Storage FUSE CSI driver, for mounting GCS buckets as volumes.
+    - `filestore-csi-driver` — Filestore CSI driver, for using Filestore instances as volumes.
+    - `config-connector` — Config Connector, which manages Google Cloud resources through Kubernetes CRDs. Installs a large set of CRDs plus controller pods in `cnrm-system`.
+  - Two addons stay outside this list. The Persistent Disk CSI driver is always enabled, since GKE enables it by default on new clusters and most workloads need it for PersistentVolumeClaims. The network policy addon is driven by `enable_dataplane_v2`.
+  - Default: all three addons enabled
+
 At least one of `blue_node_pool.enabled` or `green_node_pool.enabled` must be true. The blue/green pools are untainted, so system workloads (kube-dns, external-secrets, metrics agents) always have somewhere to schedule — additional tainted pools (e.g. the `gcp-gke-gpu-node-pool` block) rely on this.
 
 GKE caps node pool names at 40 characters. When `name` is unset, the provider appends a 26-char unique suffix to the default `<random-suffix>-<color>-` prefix (12 chars max for green, 11 for blue) — well within the limit. When `name` is set, the full value must be ≤40 chars.
+
+## Cost allocation
+
+GKE cost allocation is always enabled on the cluster. It adds Kubernetes metadata (cluster, namespace, workload) to the [Cloud Billing detailed usage export](https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables/detailed-usage), which is what makes per-namespace and per-workload cost attribution possible.
+
+It is free to enable and has no effect on scheduling. Two things to know:
+
+- The labels only appear in the **detailed** usage export, not the standard one, so a detailed export must be configured for the metadata to be visible.
+- There is no backfill. Usage is only labelled from the moment allocation is enabled, so earlier spend cannot be attributed retroactively.
 
 ## Migrating from a single-pool setup
 

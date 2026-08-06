@@ -111,6 +111,36 @@ WARNING: Changing this will result in a recreation of the cluster without downti
 EOF
 }
 
+variable "enabled_addons" {
+  type = list(string)
+  default = [
+    "gcs-fuse-csi-driver",
+    "filestore-csi-driver",
+    "config-connector",
+  ]
+  description = <<EOF
+List of GKE addons to enable on the cluster. Addons omitted from this list are disabled.
+
+Every addon in this list reserves node capacity through pod requests whether a cluster uses it or not, so trimming the list frees room for workloads. The CSI drivers run a DaemonSet on each node. Config Connector runs a fixed set of controllers alongside a large set of CRDs.
+
+Supported addon names (these are the only values accepted; the list is the full set of optional addons this module knows how to configure):
+  - gcs-fuse-csi-driver     Cloud Storage FUSE CSI driver, for mounting GCS buckets as volumes.
+  - filestore-csi-driver    Filestore CSI driver, for using Filestore instances as volumes.
+  - config-connector        Config Connector, which manages Google Cloud resources through Kubernetes CRDs. Installs a large set of CRDs plus controller pods in `cnrm-system`.
+
+Two addons are deliberately not configurable here. The Persistent Disk CSI driver stays enabled because GKE enables it by default on new clusters and most workloads need it for PersistentVolumeClaims. The network policy addon is driven by `var.enable_dataplane_v2`.
+EOF
+
+  validation {
+    condition = length(setsubtract(toset(var.enabled_addons), toset([
+      "gcs-fuse-csi-driver",
+      "filestore-csi-driver",
+      "config-connector",
+    ]))) == 0
+    error_message = "enabled_addons contains an unsupported addon name. See the variable description for the full list of supported addons."
+  }
+}
+
 variable "enable_managed_otel" {
   type    = bool
   default = false

@@ -1,4 +1,6 @@
 locals {
+  enabled_addons = toset(var.enabled_addons)
+
   // Select the zones to place the node pool
   // We choose from the list available zones in this region
   // We limit the zones chosen by var.num_node_zones (but this cannot be larger than the total available zones)
@@ -60,18 +62,28 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  # GKE cost allocation. Adds Kubernetes metadata (cluster, namespace, workload) to the
+  # Cloud Billing detailed usage export, which is what makes per-namespace cost attribution
+  # possible. Free to enable, and there is no backfill, so it only labels usage from the
+  # moment it is turned on.
+  cost_management_config {
+    enabled = true
+  }
+
   addons_config {
     gcs_fuse_csi_driver_config {
-      enabled = true
+      enabled = contains(local.enabled_addons, "gcs-fuse-csi-driver")
     }
+    # Left enabled: GKE turns this on by default for new clusters, and most workloads
+    # need it for PersistentVolumeClaims.
     gce_persistent_disk_csi_driver_config {
       enabled = true
     }
     gcp_filestore_csi_driver_config {
-      enabled = true
+      enabled = contains(local.enabled_addons, "filestore-csi-driver")
     }
     config_connector_config {
-      enabled = true
+      enabled = contains(local.enabled_addons, "config-connector")
     }
     network_policy_config {
       disabled = var.enable_dataplane_v2 ? true : false
